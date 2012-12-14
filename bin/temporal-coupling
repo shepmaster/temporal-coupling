@@ -49,27 +49,23 @@ end
 
 class StatisticFileCache < Struct.new(:generator)
   def files_in_modified_order
-    if File.exist? "file_cache"
-      File.open("file_cache") do |f|
-        Marshal.load(f)
-      end
-    else
-      File.open("file_cache", "w") do |f|
-        files = generator.files_in_modified_order
-        Marshal.dump(files, f)
-        files
-      end
-    end
+    cache("file_cache", :files_in_modified_order)
   end
 
   def pairs_in_modified_order
-    if File.exist? "pair_cache"
-      File.open("pair_cache") do |f|
+    cache("pair_cache", :pairs_in_modified_order)
+  end
+
+  private
+
+  def cache(name, method)
+    if File.exist? name
+      File.open(name) do |f|
         Marshal.load(f)
       end
     else
-      File.open("pair_cache", "w") do |f|
-        files = generator.pairs_in_modified_order
+      File.open(name, "w") do |f|
+        files = generator.send(method)
         Marshal.dump(files, f)
         files
       end
