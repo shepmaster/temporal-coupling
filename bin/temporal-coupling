@@ -4,14 +4,7 @@ lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 
 require 'temporal_coupling/git_file_source'
-
-class FileFilter < Struct.new(:pattern, :file_source)
-  def files_by_commit
-    file_source.files_by_commit.map do |files|
-      files.reject {|f| pattern.match(f)}
-    end.reject(&:empty?)
-  end
-end
+require 'temporal_coupling/file_filter'
 
 class StatisticGenerator < Struct.new(:file_source)
   def files_in_modified_order
