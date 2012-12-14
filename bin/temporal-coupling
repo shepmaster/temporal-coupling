@@ -1,16 +1,24 @@
 #!/usr/bin/env ruby
 
-repo = '/Users/shep/Projects/jruby/.git'
-start_date = '2012-11-01'
-branch = 'master'
+class GitFileSource < Struct.new(:repo, :start_date, :branch)
+  def files_by_commit
+    commits.map do |commit_hash|
+      files = %x{ git --git-dir=#{repo} diff-tree --no-commit-id --name-only -r #{commit_hash} }
+      files.split("\n")
+    end.reject(&:empty?)
+  end
 
-commits = %x{ git --git-dir=#{repo} rev-list --since=#{start_date} #{branch} }
-commits = commits.split("\n")
+  private
 
-files_by_commit = commits.map do |commit_hash|
-  files = %x{ git --git-dir=#{repo} diff-tree --no-commit-id --name-only -r #{commit_hash} }
-  files.split("\n")
-end.reject(&:empty?)
+  def commits
+    commits = %x{ git --git-dir=#{repo} rev-list --since=#{start_date} #{branch} }
+    commits.split("\n")
+  end
+end
+
+file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
+
+files_by_commit = file_source.files_by_commit
 
 counts = Hash.new(0)
 
