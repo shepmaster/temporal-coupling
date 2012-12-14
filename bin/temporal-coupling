@@ -27,6 +27,10 @@ option_parser = OptionParser.new do |opts|
   opts.on('--exclude-file FILENAME') do |file|
     options[:filtered_files] << Regexp.new(file)
   end
+
+  opts.on('--cache-dir DIRECTORY') do |dir|
+    options[:cache_dir] = dir
+  end
 end
 option_parser.parse!
 
@@ -35,7 +39,9 @@ options[:filtered_files].each do |filter|
   file_source = FileFilter.new(filter, file_source)
 end
 statistics = StatisticGenerator.new(file_source)
-#statistics = StatisticFileCache.new('jruby', statistics)
+if options[:cache_dir]
+  statistics = StatisticFileCache.new(options[:cache_dir], statistics)
+end
 
 puts 'Most modified files:'
 
