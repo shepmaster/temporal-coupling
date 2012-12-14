@@ -65,9 +65,9 @@ class StatisticFileCache < Struct.new(:generator)
       end
     else
       File.open(name, "w") do |f|
-        files = generator.send(method)
-        Marshal.dump(files, f)
-        files
+        generator.send(method).tap do |files|
+          Marshal.dump(files, f)
+        end
       end
     end
   end
