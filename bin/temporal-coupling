@@ -10,6 +10,7 @@ require 'temporal_coupling/statistic_generator'
 require 'temporal_coupling/statistic_file_cache'
 
 options = {}
+options[:filtered_files] = []
 option_parser = OptionParser.new do |opts|
   opts.on('--repo REPO') do |repo|
     options[:repo] = repo
@@ -22,11 +23,17 @@ option_parser = OptionParser.new do |opts|
   opts.on('--branch BRANCH') do |branch|
     options[:branch] = branch
   end
+
+  opts.on('--exclude-file FILENAME') do |file|
+    options[:filtered_files] << Regexp.new(file)
+  end
 end
 option_parser.parse!
 
 file_source = GitFileSource.new(options[:repo], options[:start_date], options[:branch] || 'master')
-#file_source = FileFilter.new(/^Gemfile/, file_source)
+options[:filtered_files].each do |filter|
+  file_source = FileFilter.new(filter, file_source)
+end
 statistics = StatisticGenerator.new(file_source)
 #statistics = StatisticFileCache.new('jruby', statistics)
 
