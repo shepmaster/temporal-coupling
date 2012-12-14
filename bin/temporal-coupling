@@ -1,20 +1,9 @@
 #!/usr/bin/env ruby
 
-class GitFileSource < Struct.new(:repo, :start_date, :branch)
-  def files_by_commit
-    commits.map do |commit_hash|
-      files = %x{ git --git-dir=#{repo} diff-tree --no-commit-id --name-only -r #{commit_hash} }
-      files.split("\n")
-    end.reject(&:empty?)
-  end
+lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 
-  private
-
-  def commits
-    commits = %x{ git --git-dir=#{repo} rev-list --since=#{start_date} #{branch} }
-    commits.split("\n")
-  end
-end
+require 'temporal_coupling/git_file_source'
 
 class FileFilter < Struct.new(:pattern, :file_source)
   def files_by_commit
