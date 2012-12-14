@@ -16,6 +16,14 @@ class GitFileSource < Struct.new(:repo, :start_date, :branch)
   end
 end
 
+class FileFilter < Struct.new(:pattern, :file_source)
+  def files_by_commit
+    file_source.files_by_commit.map do |files|
+      files.reject {|f| pattern.match(f)}
+    end.reject(&:empty?)
+  end
+end
+
 class StatisticGenerator < Struct.new(:file_source)
   def files_in_modified_order
     counts = Hash.new(0)
@@ -84,6 +92,7 @@ class StatisticFileCache < Struct.new(:directory, :generator)
 end
 
 file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
+#file_source = FileFilter.new(/^Gemfile/, file_source)
 statistics = StatisticGenerator.new(file_source)
 #statistics = StatisticFileCache.new('jruby', statistics)
 
