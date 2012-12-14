@@ -16,8 +16,6 @@ class GitFileSource < Struct.new(:repo, :start_date, :branch)
   end
 end
 
-file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
-
 class StatisticGenerator < Struct.new(:file_source)
   def files_in_modified_order
     counts = Hash.new(0)
@@ -49,8 +47,6 @@ class StatisticGenerator < Struct.new(:file_source)
   end
 end
 
-statistics = StatisticGenerator.new(file_source)
-
 class StatisticFileCache < Struct.new(:generator)
   def files_in_modified_order
     if File.exist? "file_cache"
@@ -81,6 +77,8 @@ class StatisticFileCache < Struct.new(:generator)
   end
 end
 
+file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
+statistics = StatisticGenerator.new(file_source)
 #statistics = StatisticFileCache.new(statistics)
 
 puts 'Most modified files:'
