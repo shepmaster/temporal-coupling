@@ -11,3 +11,34 @@ files_by_commit = commits.map do |commit_hash|
   files = %x{ git --git-dir=#{repo} diff-tree --no-commit-id --name-only -r #{commit_hash} }
   files.split("\n")
 end.reject(&:empty?)
+
+counts = Hash.new(0)
+
+files_by_commit.flatten.each do |file|
+  counts[file] += 1
+end
+
+files_in_modified_order = counts.to_a.sort_by(&:last).reverse
+
+puts 'Most modified files:'
+
+files_in_modified_order.first(5).each do |file, count|
+  puts "#{count}: #{file}"
+end
+
+all_pairs = files_by_commit.flat_map do |files|
+  files.combination(2).to_a
+end
+
+pair_counts = Hash.new(0)
+all_pairs.each do |pair|
+  pair_counts[pair] += 1
+end
+
+pairs_in_modified_order = pair_counts.to_a.sort_by(&:last).reverse
+
+puts 'Most modified pairs:'
+
+pairs_in_modified_order.first(5).each do |files, count|
+  puts "#{count}: #{files.join(', ')}"
+end
