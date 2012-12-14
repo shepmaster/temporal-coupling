@@ -6,42 +6,7 @@ $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 require 'temporal_coupling/git_file_source'
 require 'temporal_coupling/file_filter'
 require 'temporal_coupling/statistic_generator'
-
-require 'pathname'
-
-class StatisticFileCache < Struct.new(:directory, :generator)
-  def files_in_modified_order
-    cache("file_cache", :files_in_modified_order)
-  end
-
-  def pairs_in_modified_order
-    cache("pair_cache", :pairs_in_modified_order)
-  end
-
-  private
-
-  def cache(name, method)
-    filename = full_path(name)
-
-    if File.exist? filename
-      File.open(filename) do |f|
-        Marshal.load(f)
-      end
-    else
-      File.open(filename, "w") do |f|
-        generator.send(method).tap do |files|
-          Marshal.dump(files, f)
-        end
-      end
-    end
-  end
-
-  def full_path(path)
-    dir_path = Pathname.new(directory)
-    Dir.mkdir(dir_path) unless dir_path.exist?
-    dir_path + path
-  end
-end
+require 'temporal_coupling/statistic_file_cache'
 
 file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
 #file_source = FileFilter.new(/^Gemfile/, file_source)
