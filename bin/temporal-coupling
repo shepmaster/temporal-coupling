@@ -54,3 +54,20 @@ puts 'Most modified pairs:'
 statistics.pairs_in_modified_order.first(5).each do |files, count|
   puts "#{count}: #{files.join(', ')}"
 end
+
+puts 'Common pairs for rapidly churning files'
+
+statistics.files_in_modified_order.first(5).each do |file, count|
+  pairs_including_file = statistics.pairs_in_modified_order.select do |files, count|
+    files.any? {|f| file == f}
+  end
+
+  puts "== Files changed at the same time as #{file}"
+
+  pairs_including_file.first(10).each do |files, pair_count|
+    other_files = files.reject {|f| file == f}
+    percent = pair_count.to_f / count
+    percent_str = "%.2f%%" % (percent * 100)
+    puts "#{pair_count} / #{count} (#{percent_str}): #{other_files.join(', ')}"
+  end
+end
