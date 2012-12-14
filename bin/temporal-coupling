@@ -3,12 +3,29 @@
 lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 
+require 'optparse'
 require 'temporal_coupling/git_file_source'
 require 'temporal_coupling/file_filter'
 require 'temporal_coupling/statistic_generator'
 require 'temporal_coupling/statistic_file_cache'
 
-file_source = GitFileSource.new('/Users/shep/Projects/jruby/.git', '2012-11-01', 'master')
+options = {}
+option_parser = OptionParser.new do |opts|
+  opts.on('--repo REPO') do |repo|
+    options[:repo] = repo
+  end
+
+  opts.on('--since START-DATE') do |start_date|
+    options[:start_date] = start_date
+  end
+
+  opts.on('--branch BRANCH') do |branch|
+    options[:branch] = branch
+  end
+end
+option_parser.parse!
+
+file_source = GitFileSource.new(options[:repo], options[:start_date], options[:branch] || 'master')
 #file_source = FileFilter.new(/^Gemfile/, file_source)
 statistics = StatisticGenerator.new(file_source)
 #statistics = StatisticFileCache.new('jruby', statistics)
