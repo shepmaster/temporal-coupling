@@ -12,23 +12,30 @@ require 'temporal_coupling/statistic_file_cache'
 options = {}
 options[:filtered_files] = []
 option_parser = OptionParser.new do |opts|
-  opts.on('--repo REPO') do |repo|
+  opts.on('--repo REPO',
+          "The path to the git repository. Must be the .git directory",
+          "or a bare repository.") do |repo|
     options[:repo] = repo
   end
 
-  opts.on('--since START-DATE') do |start_date|
+  opts.on('--since YYYY-MM-DD',
+          "The date to start processing commits.") do |start_date|
     options[:start_date] = start_date
   end
 
-  opts.on('--branch BRANCH') do |branch|
+  opts.on('--branch BRANCH',
+          "The branch to process. Defaults to 'master'.") do |branch|
     options[:branch] = branch
   end
 
-  opts.on('--exclude-file FILENAME') do |file|
+  opts.on('--exclude-file REGEX',
+          "Will not process files matching REGEX.") do |file|
     options[:filtered_files] << Regexp.new(file)
   end
 
-  opts.on('--cache-dir DIRECTORY') do |dir|
+  opts.on('--cache-dir DIRECTORY',
+          "When provided, processed data will be cached. This allows",
+          "for quick lookups after initial processing.") do |dir|
     options[:cache_dir] = dir
   end
 end
