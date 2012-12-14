@@ -51,6 +51,38 @@ end
 
 statistics = StatisticGenerator.new(file_source)
 
+class StatisticFileCache < Struct.new(:generator)
+  def files_in_modified_order
+    if File.exist? "file_cache"
+      File.open("file_cache") do |f|
+        Marshal.load(f)
+      end
+    else
+      File.open("file_cache", "w") do |f|
+        files = generator.files_in_modified_order
+        Marshal.dump(files, f)
+        files
+      end
+    end
+  end
+
+  def pairs_in_modified_order
+    if File.exist? "pair_cache"
+      File.open("pair_cache") do |f|
+        Marshal.load(f)
+      end
+    else
+      File.open("pair_cache", "w") do |f|
+        files = generator.pairs_in_modified_order
+        Marshal.dump(files, f)
+        files
+      end
+    end
+  end
+end
+
+#statistics = StatisticFileCache.new(statistics)
+
 puts 'Most modified files:'
 
 statistics.files_in_modified_order.first(5).each do |file, count|
