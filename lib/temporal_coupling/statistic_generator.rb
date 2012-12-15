@@ -1,12 +1,18 @@
 class StatisticGenerator < Struct.new(:file_source)
-  def files_in_modified_order
-    counts = Hash.new(0)
+  class Frequency < Struct.new(:items)
+    def by_frequency
+      counts = Hash.new(0)
 
-    files_by_commit.flatten.each do |file|
-      counts[file] += 1
+      items.each do |item|
+        counts[item] += 1
+      end
+
+      counts.to_a.sort_by(&:last).reverse
     end
+  end
 
-    counts.to_a.sort_by(&:last).reverse
+  def files_in_modified_order
+    Frequency.new(files_by_commit.flatten).by_frequency
   end
 
   def pairs_in_modified_order
@@ -14,12 +20,7 @@ class StatisticGenerator < Struct.new(:file_source)
       files.combination(2).to_a
     end
 
-    pair_counts = Hash.new(0)
-    all_pairs.each do |pair|
-      pair_counts[pair] += 1
-    end
-
-    pair_counts.to_a.sort_by(&:last).reverse
+    Frequency.new(all_pairs).by_frequency
   end
 
   private
