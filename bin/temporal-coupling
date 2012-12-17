@@ -51,7 +51,15 @@ option_parser = OptionParser.new do |opts|
 end
 option_parser.parse!
 
-file_source = GitFileSource.new(options[:repo], options[:start_date], options[:branch] || DEFAULT_BRANCH)
+repo = options.fetch(:repo) do
+  raise ArgumentError, "A git repository must be provided"
+end
+start_date = options.fetch(:start_date) do
+  raise ArgumentError, "A start date must be provided"
+end
+branch = options.fetch(:branch, DEFAULT_BRANCH)
+
+file_source = GitFileSource.new(repo, start_date, branch)
 options[:filtered_files].each do |filter|
   file_source = FileFilter.new(filter, file_source)
 end
