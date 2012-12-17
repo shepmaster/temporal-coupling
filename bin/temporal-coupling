@@ -67,26 +67,29 @@ end
 
 top_n = options.fetch(:top_n, DEFAULT_TOP_N)
 
-puts 'Most modified files:'
+puts '# Most modified files'
 
 statistics.files_in_modified_order.first(top_n).each do |file, count|
   puts "#{count}: #{file}"
 end
 
-puts 'Most modified pairs:'
+puts
+puts '# Most modified pairs'
 
 statistics.pairs_in_modified_order.first(top_n).each do |files, count|
   puts "#{count}: #{files.join(', ')}"
 end
 
-puts 'Common pairs for rapidly churning files'
+puts
+puts '# Common pairs of the most modified files'
 
 statistics.files_in_modified_order.first(top_n).each do |file, count|
   pairs_including_file = statistics.pairs_in_modified_order.select do |files, count|
     files.any? {|f| file == f}
   end
 
-  puts "== Files changed at the same time as #{file}"
+  puts
+  puts "## Files changed at the same time as #{file}"
 
   pairs_including_file.first(10).each do |files, pair_count|
     other_files = files.reject {|f| file == f}
