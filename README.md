@@ -25,3 +25,16 @@ information:
 1. Most modified files
 2. Most modified pairs of files
 3. Common pairs of the most modified files
+
+## Ignoring uninteresting files
+
+`--exclude-file REGEX` will allow you to ignore files that match a
+Ruby regular expression. For example, in a Ruby application that uses
+Bundler, you might not care about how often the dependencies change,
+i.e. when `Gemfile` and `Gemfile.lock` are modified.
+
+```bash
+./bin/temporal-coupling --repo /path/to/ruby-app/.git --since 2012-01-01 --exclude-file '^Gemfile'
+```
+
+You can use `--exclude-file` multiple times in a single execution.
