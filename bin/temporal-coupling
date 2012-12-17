@@ -28,6 +28,12 @@ option_parser = OptionParser.new do |opts|
     options[:branch] = branch
   end
 
+  opts.on('--top NUM',
+          "The number of files to show coupling information for.",
+          "Defaults to 5.") do |top_n|
+    options[:top_n] = top_n.to_i
+  end
+
   opts.on('--exclude-file REGEX',
           "Will not process files matching REGEX.") do |file|
     options[:filtered_files] << Regexp.new(file)
@@ -50,21 +56,23 @@ if options[:cache_dir]
   statistics = StatisticFileCache.new(options[:cache_dir], statistics)
 end
 
+top_n = options.fetch(:top_n, 5)
+
 puts 'Most modified files:'
 
-statistics.files_in_modified_order.first(5).each do |file, count|
+statistics.files_in_modified_order.first(top_n).each do |file, count|
   puts "#{count}: #{file}"
 end
 
 puts 'Most modified pairs:'
 
-statistics.pairs_in_modified_order.first(5).each do |files, count|
+statistics.pairs_in_modified_order.first(top_n).each do |files, count|
   puts "#{count}: #{files.join(', ')}"
 end
 
 puts 'Common pairs for rapidly churning files'
 
-statistics.files_in_modified_order.first(5).each do |file, count|
+statistics.files_in_modified_order.first(top_n).each do |file, count|
   pairs_including_file = statistics.pairs_in_modified_order.select do |files, count|
     files.any? {|f| file == f}
   end
