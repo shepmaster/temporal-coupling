@@ -5,7 +5,7 @@ coupled together. Instead of parsing and analyzing code statically,
 it looks at what files are changed and committed together.
 
 The premise is that files that change at the same time are coupled. In
-certain cases, like a class and it's unit tests, this coupling would
+certain cases, like a class and its unit tests, this coupling would
 be expected and a good sign. In other cases, such as two seemingly
 unrelated classes, the high amount of coupling could be a code smell.
 
