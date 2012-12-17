@@ -4,10 +4,7 @@ lib_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 
 require 'optparse'
-require 'temporal_coupling/git_file_source'
-require 'temporal_coupling/file_filter'
-require 'temporal_coupling/statistic_generator'
-require 'temporal_coupling/statistic_file_cache'
+require 'temporal_coupling'
 
 DEFAULT_BRANCH = 'master'
 DEFAULT_TOP_N = 5
