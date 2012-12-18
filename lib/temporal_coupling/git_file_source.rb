@@ -11,7 +11,11 @@ class GitFileSource < Struct.new(:repo, :start_date, :options)
   private
 
   def commits
-    commits = git %W{ rev-list --since=#{start_date} #{end_date} #{branch} }
+    if start_date
+      commits = git %W{ rev-list --since=#{start_date} #{end_date} #{branch} }
+    else
+      commits = git %W{ rev-list #{end_date} #{branch} }
+    end
     commits.split("\n")
   end
 
