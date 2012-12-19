@@ -14,7 +14,7 @@ unrelated classes, the high amount of coupling could be a code smell.
 Checkout a copy of this repository, then execute the following:
 
 ```bash
-./bin/temporal-coupling --repo .git --since 2012-01-01
+./bin/temporal-coupling --repo $PWD --since 2012-01-01
 ```
 
 This minimal invocation will provide statistics for this project

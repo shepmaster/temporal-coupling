@@ -13,8 +13,7 @@ options = {}
 options[:filtered_files] = []
 option_parser = OptionParser.new do |opts|
   opts.on('--repo REPO',
-          "The path to the git repository. Must be the .git directory",
-          "or a bare repository.") do |repo|
+          "The path to the git repository.") do |repo|
     options[:repo] = repo
   end
 
