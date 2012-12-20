@@ -1,4 +1,6 @@
-class GitFileSource < Struct.new(:repo, :start_date, :branch)
+class GitFileSource < Struct.new(:repo, :start_date, :options)
+  DEFAULT_BRANCH = 'master'
+
   def files_by_commit
     commits.map do |commit_hash|
       files = git %W{ diff-tree --no-commit-id --name-only -r #{commit_hash} }
@@ -11,6 +13,10 @@ class GitFileSource < Struct.new(:repo, :start_date, :branch)
   def commits
     commits = git %W{ rev-list --since=#{start_date} #{branch} }
     commits.split("\n")
+  end
+
+  def branch
+    options.fetch(:branch, DEFAULT_BRANCH)
   end
 
   def git(*args)

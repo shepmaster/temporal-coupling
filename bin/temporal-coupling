@@ -6,7 +6,6 @@ $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 require 'optparse'
 require 'temporal_coupling'
 
-DEFAULT_BRANCH = 'master'
 DEFAULT_TOP_N = 5
 
 options = {}
@@ -24,7 +23,7 @@ option_parser = OptionParser.new do |opts|
 
   opts.on('--branch BRANCH',
           "The branch to process.",
-          "Defaults to '#{DEFAULT_BRANCH}'.") do |branch|
+          "Defaults to '#{GitFileSource::DEFAULT_BRANCH}'.") do |branch|
     options[:branch] = branch
   end
 
@@ -53,9 +52,8 @@ end
 start_date = options.fetch(:start_date) do
   raise ArgumentError, "A start date must be provided"
 end
-branch = options.fetch(:branch, DEFAULT_BRANCH)
 
-file_source = GitFileSource.new(repo, start_date, branch)
+file_source = GitFileSource.new(repo, start_date, options)
 options[:filtered_files].each do |filter|
   file_source = FileFilter.new(filter, file_source)
 end
