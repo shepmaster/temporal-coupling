@@ -21,6 +21,11 @@ option_parser = OptionParser.new do |opts|
     options[:start_date] = start_date
   end
 
+  opts.on('--until YYYY-MM-DD',
+          "The date to stop processing commits.") do |end_date|
+    options[:end_date] = end_date
+  end
+
   opts.on('--branch BRANCH',
           "The branch to process.",
           "Defaults to '#{GitFileSource::DEFAULT_BRANCH}'.") do |branch|

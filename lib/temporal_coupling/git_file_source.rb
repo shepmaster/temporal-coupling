@@ -11,12 +11,18 @@ class GitFileSource < Struct.new(:repo, :start_date, :options)
   private
 
   def commits
-    commits = git %W{ rev-list --since=#{start_date} #{branch} }
+    commits = git %W{ rev-list --since=#{start_date} #{end_date} #{branch} }
     commits.split("\n")
   end
 
   def branch
     options.fetch(:branch, DEFAULT_BRANCH)
+  end
+
+  def end_date
+    if options[:end_date]
+      "--until=#{options[:end_date]}"
+    end
   end
 
   def git(*args)
