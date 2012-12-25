@@ -7,6 +7,7 @@ require 'optparse'
 require 'temporal_coupling'
 
 DEFAULT_TOP_N = 5
+DEFAULT_START_DATE = nil
 
 options = {}
 options[:filtered_files] = []
@@ -54,9 +55,7 @@ option_parser.parse!
 repo = options.fetch(:repo) do
   raise ArgumentError, "A git repository must be provided"
 end
-start_date = options.fetch(:start_date) do
-  raise ArgumentError, "A start date must be provided"
-end
+start_date = options.fetch(:start_date, DEFAULT_START_DATE)
 
 file_source = GitFileSource.new(repo, start_date, options)
 options[:filtered_files].each do |filter|
